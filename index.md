@@ -78,3 +78,9 @@ MIDIノートナンバー 0-15 を受信すると、その値が `Note Sequence 
 
 *   **/sequencePosition `(int)`**: 現在の `Sequence Position` を送信します。
 *   **/noteSequencePosition `(int)`**: 現在の `Note Sequence Position` を送信します。
+
+---
+
+## フッター
+
+[プライバシーポリシー](./privacy-policy.html)
