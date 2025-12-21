@@ -80,6 +80,8 @@ MIDIノートナンバー 0-15 を受信すると、その値が `Note Sequence 
 *   **/noteSequencePosition `(int)`**: 現在の `Note Sequence Position` を送信します。
 
 ---
+## お問い合わせ
+[ca54makske+abc@gmail.com](<mailto:ca54makske+abc@gmail.com>)
 
 ## フッター
 
