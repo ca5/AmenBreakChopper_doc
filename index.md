@@ -36,7 +36,7 @@ AmenBreakChopperはMIDIノートとMIDI CCメッセージによる詳細なコ�
 | **MIDI Note**      | 0-15                  | Delay Time 設定            | 受信したノートナンバーが `Note Sequence Position` に設定され、ディレイタイム計算に利用されます。           |
 | **MIDI Note**      | 32-47                  | Sequence Position フィードバック  | 現在の `Sequence Position` を点灯させるためのフィードバック専用。           |
 | **MIDI CC**        | 93 (デフォルト)   | シーケンスリセット         | 次の8分音符のタイミングで `Delay Time` を0にし、`Note Sequence Position` を現在の `Sequence Position` に同期させます。 |
-| **MIDI CC**        | 106 (デフォルト) | タイマーリセット           | シーケンサーのタイミングと再生位置をリセットし、DAWの再生位置に合わせてグリッドを補正します。              |
+| **MIDI CC**        | 106 (デフォルト) | ハードリセット           | シーケンサーのタイミングと再生位置をリセットし、DAWの再生位置に合わせてグリッドを補正します。              |
 | **MIDI CC**        | 97 (デフォルト)  | ソフトリセット             | `Sequence Position` と `Note Sequence Position` を0にリセットします。                                |
 | **MIDI CC**        | 0 (デフォルト) | Delay Adjust 増加       | シーケンサーのタイミング微調整値を増加させます。                                                      |
 | **MIDI CC**        | 0 (デフォルト) | Delay Adjust 減少       | シーケンサーのタイミング微調整値を減少させます。                                                      |
@@ -60,8 +60,8 @@ AmenBreakChopperはMIDIノートとMIDI CCメッセージによる詳細なコ�
 ### MIDI CC Settings
 *   **MIDI CC Seq Reset**: シーケンスをリセットするためのMIDI CC番号を設定します。
 *   **Seq Reset Mode**: CCメッセージを受信した際の動作モードを設定します ("Any", "Gate-On", "Gate-Off")。
-*   **MIDI CC Timer Reset**: タイマーをリセットするためのMIDI CC番号を設定します。
-*   **Timer Reset Mode**: CCメッセージを受信した際の動作モードを設定します。
+*   **MIDI CC Hard Reset**: ハードリセットを行うためのMIDI CC番号を設定します。
+*   **Hard Reset Mode**: CCメッセージを受信した際の動作モードを設定します。
 *   **MIDI CC Soft Reset**: ソフトリセットを行うためのMIDI CC番号を設定します。
 *   **Soft Reset Mode**: CCメッセージを受信した際の動作モードを設定します。
 
@@ -79,7 +79,7 @@ MIDIノートナンバー 0-15 を受信すると、その値が `Note Sequence 
 
 ### シーケンサーのリセット
 *   **Sequence Reset**: `MIDI CC Seq Reset` で設定したCCを受信すると、次の8分音符のタイミングで `Delay Time` を0にし、`Note Sequence Position` を現在の `Sequence Position` に同期させます。
-*   **Timer Reset**: `MIDI CC Timer Reset` で設定したCCを受信すると、シーケンサーのタイミングと再生位置をリセットします。DAWの再生位置に合わせてグリッドを補正します。
+*   **Hard Reset**: `MIDI CC Hard Reset` で設定したCCを受信すると、シーケンサーのタイミングと再生位置をリセットします。DAWの再生位置に合わせてグリッドを補正します。
 *   **Soft Reset**: `MIDI CC Soft Reset` で設定したCCを受信すると、`Sequence Position` と `Note Sequence Position` を0にリセットします。
 
 ## OSCコントロール
@@ -88,7 +88,7 @@ MIDIノートナンバー 0-15 を受信すると、その値が `Note Sequence 
 
 *   **/delayTime `(int)`**: `Delay Time` を設定します (0-15)。
 *   **/sequenceReset**: シーケンスリセットをトリガーします。
-*   **/timerReset**: タイマーリセットをトリガーします。
+*   **/hardReset**: ハードリセットをトリガーします。
 *   **/softReset**: ソフトリセットをトリガーします。
 *   **/setNoteSequencePosition `(int)`**: `Note Sequence Position` を直接設定します (0-15)。
 
