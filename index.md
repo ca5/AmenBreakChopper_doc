@@ -9,6 +9,14 @@ title: AmenBreakChopper Documentation
 AmenBreakChopperは、入力された音声をBPMに同期したディレイで再生するビートチョッパー・エフェクトです。
 JUCEフレームワークを使用して開発されたオーディオプラグインで、DelayTimeパラメータはMIDIノートによってコントロール可能です。また、OSCやMIDI CCによる詳細なコントロールにも対応しています。
 
+**v0.3系の主要アップデート:**
+- モダンなWebベースのユーザーインターフェース
+- リアルタイム波形表示機能
+- 内蔵サンプルモード(140/160/180/200 BPM対応)
+- Standaloneモードでのオーディオ/MIDIデバイス選択
+- Bluetooth MIDI接続対応
+- BPM同期モード(HOST/MIDI CLOCK/MANUAL)
+
 ## DEMO
 <div class="video-container">
 <iframe width="560" height="315" src="https://www.youtube.com/embed/VpYfyNo0POY?si=G3WgCOwmWzwhOq6J" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
@@ -22,10 +30,37 @@ JUCEフレームワークを使用して開発されたオーディオプラグ�
 *   iOS (AUv3, Standalone)
 *   macOS / Windows (VST3)
 
+## 主要機能
+
+### リアルタイム波形表示
+現在再生中のオーディオバッファの波形をリアルタイムで表示します。16個のスライスブロックで視覚的にシーケンス位置を確認できます。
+
+### サンプルモード
+内蔵サンプル(Amen Break 140/160/180/200 BPM)を使用して、外部オーディオ入力なしでエフェクトを試すことができます。
+
+### デバイス管理
+- **オーディオデバイス選択**: 使用するオーディオインターフェースを選択
+- **MIDIデバイス選択**: 複数のMIDI入力デバイスを同時に有効化可能
+- **Bluetooth MIDI**: iOS/macOSでBluetooth MIDIデバイスとのペアリングに対応
+- **入力チャンネル選択**: ステレオ入力のL/Rチャンネルを個別に設定
+
+### BPM同期モード
+- **HOST**: DAWのテンポ情報に同期(プラグインモード推奨)
+- **MIDI CLOCK**: 外部MIDI Clock信号に同期
+- **MANUAL**: 手動でBPMを設定(40-300 BPM)
+
 ## 基本的な使い方
 
+### プラグインモード
 1.  お使いのDAWで、AmenBreakChopperをオーディオトラックまたはインストゥルメントトラックにインサートします。
 2.  トラックにオーディオ信号を入力すると、エフェクトがかかります。
+3.  BPM Sync Modeは「HOST」に設定してください。
+
+### Standaloneモード
+1.  アプリケーションを起動します。
+2.  Configuration画面でオーディオデバイスとMIDI入力デバイスを選択します。
+3.  BPM Sync Modeを選択します(HOST/MIDI CLOCK/MANUAL)。
+4.  サンプルモードを使用する場合は、Sample Loaderから内蔵サンプルを選択します。
 
 ## MIDIコントローラーによる操作
 
@@ -36,7 +71,7 @@ AmenBreakChopperはMIDIノートとMIDI CCメッセージによる詳細なコ�
 | **MIDI Note**      | 0-15                  | Delay Time 設定            | 受信したノートナンバーが `Note Sequence Position` に設定され、ディレイタイム計算に利用されます。           |
 | **MIDI Note**      | 32-47                  | Sequence Position フィードバック  | 現在の `Sequence Position` を点灯させるためのフィードバック専用。           |
 | **MIDI CC**        | 93 (デフォルト)   | シーケンスリセット         | 次の8分音符のタイミングで `Delay Time` を0にし、`Note Sequence Position` を現在の `Sequence Position` に同期させます。 |
-| **MIDI CC**        | 106 (デフォルト) | タイマーリセット           | シーケンサーのタイミングと再生位置をリセットし、DAWの再生位置に合わせてグリッドを補正します。              |
+| **MIDI CC**        | 106 (デフォルト) | ハードリセット           | シーケンサーのタイミングと再生位置をリセットし、DAWの再生位置に合わせてグリッドを補正します。              |
 | **MIDI CC**        | 97 (デフォルト)  | ソフトリセット             | `Sequence Position` と `Note Sequence Position` を0にリセットします。                                |
 | **MIDI CC**        | 0 (デフォルト) | Delay Adjust 増加       | シーケンサーのタイミング微調整値を増加させます。                                                      |
 | **MIDI CC**        | 0 (デフォルト) | Delay Adjust 減少       | シーケンサーのタイミング微調整値を減少させます。                                                      |
@@ -44,10 +79,18 @@ AmenBreakChopperはMIDIノートとMIDI CCメッセージによる詳細なコ�
 ## パラメータの詳細
 
 ### Main Parameters
-*   **Control Mode**: "Internal"と"OSC"のモードを切り替えます。
+*   **Control Mode**: "MIDI"と"OSC"のモードを切り替えます。
 *   **Delay Time**: ディレイタイムを8分音符単位で設定します (0-15)。
 *   **Sequence Position**: 現在のシーケンサーの再生位置を示します (0-15)。
 *   **Note Sequence Position**: MIDIノートによって設定されたシーケンス位置を示します (0-15)。
+
+### BPM Sync & Audio (Standalone)
+*   **BPM Sync Mode**: BPM同期のソースを選択します (HOST/MIDI CLOCK/MANUAL)。
+*   **Internal BPM**: Manual モード時の BPM 設定 (40-300)。
+*   **Input Channel L/R**: ステレオ入力の左右チャンネル番号を設定します (1-8)。
+
+### Sample Mode
+*   **Sample Loader**: 内蔵サンプル(Amen Break 140/160/180/200 BPM)を選択できます。サンプルモード使用時は外部オーディオ入力の代わりに選択したサンプルが再生されます。
 
 ### MIDI Settings
 *   **MIDI In Channel**: MIDI入力チャンネルを設定します (0=Omni)。
@@ -60,8 +103,8 @@ AmenBreakChopperはMIDIノートとMIDI CCメッセージによる詳細なコ�
 ### MIDI CC Settings
 *   **MIDI CC Seq Reset**: シーケンスをリセットするためのMIDI CC番号を設定します。
 *   **Seq Reset Mode**: CCメッセージを受信した際の動作モードを設定します ("Any", "Gate-On", "Gate-Off")。
-*   **MIDI CC Timer Reset**: タイマーをリセットするためのMIDI CC番号を設定します。
-*   **Timer Reset Mode**: CCメッセージを受信した際の動作モードを設定します。
+*   **MIDI CC Hard Reset**: ハードリセットを行うためのMIDI CC番号を設定します。
+*   **Hard Reset Mode**: CCメッセージを受信した際の動作モードを設定します。
 *   **MIDI CC Soft Reset**: ソフトリセットを行うためのMIDI CC番号を設定します。
 *   **Soft Reset Mode**: CCメッセージを受信した際の動作モードを設定します。
 
@@ -71,6 +114,14 @@ AmenBreakChopperはMIDIノートとMIDI CCメッセージによる詳細なコ�
 *   **MIDI CC Delay Adjust Bwd**: Delay Adjustを減少させるためのMIDI CC番号を設定します。
 *   **Delay Adjust CC Step**: CCでDelay Adjustを操作する際のステップサイズを設定します。
 
+### Device Settings (Standalone Mode Only)
+*   **Audio Device**: 使用するオーディオデバイスを選択します。
+*   **MIDI Inputs**: 有効化するMIDI入力デバイスを選択します(複数選択可能)。
+*   **Bluetooth MIDI**: Bluetooth MIDIデバイスとのペアリングダイアログを開きます。
+
+### UI Settings
+*   **Color Theme**: UIのカラーテーマを選択します (Green/Blue/Purple/Red/Orange/Cyan/Pink)。
+
 ## MIDIコントロール
 
 ### ディレイタイムのコントロール
@@ -79,7 +130,7 @@ MIDIノートナンバー 0-15 を受信すると、その値が `Note Sequence 
 
 ### シーケンサーのリセット
 *   **Sequence Reset**: `MIDI CC Seq Reset` で設定したCCを受信すると、次の8分音符のタイミングで `Delay Time` を0にし、`Note Sequence Position` を現在の `Sequence Position` に同期させます。
-*   **Timer Reset**: `MIDI CC Timer Reset` で設定したCCを受信すると、シーケンサーのタイミングと再生位置をリセットします。DAWの再生位置に合わせてグリッドを補正します。
+*   **Hard Reset**: `MIDI CC Hard Reset` で設定したCCを受信すると、シーケンサーのタイミングと再生位置をリセットします。DAWの再生位置に合わせてグリッドを補正します。
 *   **Soft Reset**: `MIDI CC Soft Reset` で設定したCCを受信すると、`Sequence Position` と `Note Sequence Position` を0にリセットします。
 
 ## OSCコントロール
@@ -88,7 +139,7 @@ MIDIノートナンバー 0-15 を受信すると、その値が `Note Sequence 
 
 *   **/delayTime `(int)`**: `Delay Time` を設定します (0-15)。
 *   **/sequenceReset**: シーケンスリセットをトリガーします。
-*   **/timerReset**: タイマーリセットをトリガーします。
+*   **/hardReset**: ハードリセットをトリガーします。
 *   **/softReset**: ソフトリセットをトリガーします。
 *   **/setNoteSequencePosition `(int)`**: `Note Sequence Position` を直接設定します (0-15)。
 
